@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "nodemon",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@date-io/date-fns": "^2.5.0",
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
     "await-to-js": "^2.1.1",
@@ -26,8 +29,14 @@
     "react-dom": "16.13.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
     "@babel/preset-env": "^7.9.0",
+    "@storybook/addon-actions": "^5.3.18",
+    "@storybook/addon-links": "^5.3.18",
+    "@storybook/addons": "^5.3.18",
+    "@storybook/react": "^5.3.18",
+    "babel-loader": "^8.1.0",
     "nodemon": "^2.0.2"
   }
 }

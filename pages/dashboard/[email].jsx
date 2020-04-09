@@ -28,6 +28,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import FirstParagraph from '../components/FirstParagraph';
 import SecondParagraph from '../components/SecondParagraph';
 import UserDataForm from '../components/UserDataForm'
+import AutomaticForm from '../components/AutomaticForm/AutomaticForm'
 
 import fetch  from "isomorphic-unfetch";
 //import useSWR from 'swr'
@@ -121,7 +122,8 @@ export default function UserDashboard(props) {
       case 'second':
         return <SecondParagraph />;
       case 'form':
-        return <UserDataForm userData={props.formData}/>;
+        {/*return <UserDataForm userData={props.formData}/>;*/}
+        return <AutomaticForm dataStoreInDB={props.dataStoreInDB} formFields={props.formFields}/>
       default:
         return null;
     }
@@ -202,7 +204,19 @@ export default function UserDashboard(props) {
   );
 }
 
+export async function getServerSideProps(ctx){
+  const {email} = ctx.params
+  const res = await fetch(`http://localhost:3000/getUserFromDB/${email}`)
+  const data = await res.json()
+  console.log('SSR-props: ' + data.formFields[0].name)
+  // Pass data to the page via props
+  return { 
+    props: {dataStoreInDB: data.dataStoreInDB, formFields: data.formFields} }
 
+}
+
+
+/*
 export async function getServerSideProps(ctx){
   const {email} = ctx.params
   const res = await fetch(`http://localhost:3000/getUserFromDB/${email}`)
@@ -213,5 +227,5 @@ export async function getServerSideProps(ctx){
     props: {formData: data} }
 
 }
-
+*/
 

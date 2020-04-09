@@ -9,6 +9,8 @@ import passport from "passport";
 import { to } from 'await-to-js'
 import {getUserByEmail} from './database/user'
 
+import {UserModel} from './database/schema'
+
 import router from "./router";
 import { connectToDatabase, connection } from "./database/connection"
 import { initialiseAuthentication } from "./auth";
@@ -40,16 +42,22 @@ nextApp.prepare().then(async () => {
     app.get('/getUserFromDB/:email', async (req, res) =>{
       const email = req.params.email
       const [err, user] = await to(getUserByEmail(email))
-      const userData = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email
-      }
-      res.send(userData)
+      const dataStoreInDB = Object.entries(user._doc).filter(item =>item[0] !== "password" && item[0] !== "__v")
+      const formFields = Object.entries(UserModel.schema.paths).map(fields => ({ name:fields[0], type: fields[1].instance})  ) 
+      res.send({dataStoreInDB, formFields})
     })
 
   app.get('/hey/:name', (req, res) =>{
     res.send(req.params.name)
+  })
+
+  app.get('/getUserSchema/:email', async (req, res) =>{
+    const email = req.params.email
+    const [err, user] = await to(getUserByEmail(email))
+    const response = new Object()
+    const dataStoreInDB = Object.entries(user._doc).filter(item =>item[0] !== "password" && item[0] !== "__v")
+    const formFields = Object.entries(UserModel.schema.paths).map(fields => ({ name:fields[0], type: fields[1].instance})  ) 
+    res.send([dataStoreInDB, formFields])
   })
   app.get('*', (req, res) => {
     return handle(req, res)
